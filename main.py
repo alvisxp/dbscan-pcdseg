@@ -2,7 +2,7 @@ import argparse
 import numpy as np
 import open3d as o3d
 import sklearn.neighbors
-import dbscan_2 as dbscan
+# import dbscan_2 as dbscan
 
 def main():
     parser = argparse.ArgumentParser()
@@ -37,3 +37,39 @@ def main():
         newPcdArray = above_ground[np.where(labels == label)[0]]
         pcdPoints = o3d.utility.Vector3dVector(newPcdArray)
         newPcd = o3d.PointCloud()
+        newPcd.points = pcdPoints
+        pcdArrayList.append(pcdPoints)
+
+        if newPcdArray.size:
+            x_max = max(newPcdArray[:, 0])
+            x_min = min(newPcdArray[:, 0])
+            y_max = max(newPcdArray[:, 1])
+            y_min = min(newPcdArray[:, 1])
+            z_max = max(newPcdArray[:, 2])
+            z_min = min(newPcdArray[:, 2])
+        
+        cube = [
+	        [x_min, y_min, z_min],
+	        [x_max, y_min, z_min],
+	        [x_min, y_max, z_min],
+	        [x_max, y_max, z_min],
+	        [x_min, y_min, z_max],
+	        [x_max, y_min, z_max],
+	        [x_min, y_max, z_max],
+	        [x_max, y_max, z_max]]
+
+        lines = [[0,1],[0,2],[1,3],[2,3],
+	              [4,5],[4,6],[5,7],[6,7],
+	              [0,4],[1,5],[2,6],[3,7]]     
+
+        line_set = o3d.Lineset()
+
+        line_set.points = o3d.Vector3dVector(cube)
+        line_set.lines = o3d.Vector2iVector(lines)
+
+        pcdArrayList.extend([line_set])
+        
+    o3d.draw_geometries(pcdArrayList)
+
+if __name__ == "main":
+    main()
