@@ -13,6 +13,9 @@ def main():
 
     pcd = o3d.io.read_point_cloud(args.filename)
 
+    print('Input File')
+    o3d.draw_geometries(pcd)
+    
     downsampRatio = np.array(pcd.points).shape[0]/ 10000
     
     pcd = o3d.geometry.unifrom_down_sample(pcd, every_k_points= int(downsampRatio))
@@ -68,8 +71,10 @@ def main():
         line_set.lines = o3d.Vector2iVector(lines)
 
         pcdArrayList.extend([line_set])
-        
+
+    print('Post Clustering')    
     o3d.draw_geometries(pcdArrayList)
 
 if __name__ == "main":
     main()
+    
